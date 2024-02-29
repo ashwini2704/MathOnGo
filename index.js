@@ -7,13 +7,19 @@ const session = require('express-session');
 const passport = require("passport");
 const OAuth2Strategy = require('passport-google-oauth2').Strategy;
 const {UserModel} = require("./models/user.model")
+const {dashboardRoute} = require("./routes/dashboard.route");
+
 
 const app = express();
 
 app.use(express.json());
-app.use(cors());
-app.use(limiter); //500 requests/minute.
-
+app.use(cors({
+      origin: "http://localhost:3000",
+      methods: "GET, POST,PUT, DELETE",
+      credentials: true
+}));
+// app.use(limiter); //500 requests/minute.
+app.use("/dashboard",dashboardRoute)
 //setup session
 app.use(session({
       secret: process.env.sessionSecret,
@@ -33,7 +39,7 @@ passport.use(
             scope: ["profile","email"]           
       },
       async(accessToken, refreshToken, profile, done) => {
-            console.log(profile)
+
             try {
                   let user = await UserModel.findOne({googleId:profile.id});
                   if(!user) {
@@ -41,10 +47,11 @@ passport.use(
                               googleId: profile.id,
                               name:profile.displayName,
                               email : profile.emails[0].value,
-                              avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=${profile.displayName}`
+                              avatar: `https://api.dicebear.com/7.x/adventurer/svg?seed=${profile.displayName}`
                         })
                         await user.save();
-                        return done(null,user);                  }
+                  }                 
+                  return done(null,user);                  
             } catch (error) {
                   return done(error,null)
             }
@@ -66,7 +73,25 @@ app.get("/auth/google", passport.authenticate("google",{scope:["profile","email"
 app.get("/auth/google/callback",passport.authenticate("google", {
       successRedirect:"http://localhost:3000/dashboard",
       failureRedirect:"http://localhost:3000/login"
-}))
+}));
+
+
+app.get("/login/success", async(req,res) => {
+     if(req.user) {
+      res.status(200).json({message: "User Logged in successfully", user : req.user})
+     }else{
+      res.status(401).json({message: "Not Authorized"})
+     }
+})
+
+app.get("/logout",(req, res,next) => {
+      req.logout(function(err){
+            if(err) {
+                  return next(err)
+            }
+            res.redirect("http://localhost:3000")
+      })
+})
 
 const PORT = process.env.PORT || 8080
 
