@@ -13,15 +13,6 @@ MongoDB set up with a database and connection URI
 Google Developer Console account set up with OAuth credentials
 Installation
 Clone the repository:
-
-bash
-Copy code
-git clone https://github.com/your-username/your-repo.git
-Install dependencies:
-
-bash
-Copy code
-cd your-repo
 npm install
 Set up environment variables:
 
