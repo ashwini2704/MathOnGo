@@ -34,5 +34,7 @@ Visit http://localhost:3000 in your browser for frontend.
 
 Routes
 /auth/google: Initiates the Google OAuth authentication process.
+
 /auth/google/callback: Callback endpoint for Google OAuth. Handles user creation or login, issues a JWT, and sets it as an HTTP-only cookie.
+
 http://localhost:3000 /dashboard: After successful authentication it will redirect to this page
