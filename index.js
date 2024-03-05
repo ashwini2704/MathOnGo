@@ -88,9 +88,10 @@ app.get(
     failureRedirect: "http://localhost:3000/login",
   }),
   (req, res) => {
-    const token = jwt.sign({ userID: req.user._id }, process.env.SECRET_KEY);
+    const token = jwt.sign({ userID: req.user._id,email:req.user.email }, process.env.SECRET_KEY);
+    console.log("my jwt token : ",token)
     res.cookie("jwt", token, { httpOnly: true , secure: true, sameSite: 'None'});
-    res.status(200).send({"token" : token});
+    res.redirect("http://localhost:3000/dashboard")
   }
 );
 

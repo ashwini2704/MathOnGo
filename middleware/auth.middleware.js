@@ -2,8 +2,7 @@ const jwt = require("jsonwebtoken")
 
 const auth = (req, res, next) => {
   // Extract JWT from the cookie
-  const token = req.rawHeaders[1].split(" ")[1];
-  console.log(token)
+  const token = req.cookies.jwt;
   try {
     if (!token) {
       return res
