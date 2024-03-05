@@ -25,7 +25,7 @@ app.use(
     credentials: true,
   })
 );
-// app.use(limiter); //500 requests/minute.
+app.use(limiter); //500 requests/minute.
 
 //setup session
 app.use(
